@@ -21,6 +21,7 @@ class DevSyncApp extends StatelessWidget {
   const DevSyncApp({super.key});
 
   @override
+
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthCubit(),

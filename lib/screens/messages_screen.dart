@@ -2,19 +2,53 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/collaboration_request_model.dart';
 import '../services/firestore_service.dart';
+import 'ai_search_results_screen.dart';
+import 'profile_screen.dart';
+import 'project_form_screen.dart';
 
-class MessagesScreen extends StatelessWidget {
+class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
+
+  @override
+  State<MessagesScreen> createState() => _MessagesScreenState();
+}
+
+class _MessagesScreenState extends State<MessagesScreen> {
+  final FirestoreService _firestoreService = FirestoreService();
+  final int _selectedIndex = 3;
+
+  void _onItemTapped(int index) {
+    if (index == _selectedIndex) return;
+
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ProjectFormScreen()),
+      );
+    } else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const AiSearchResultsScreen()),
+      );
+    } else if (index == 3) {
+      // Already on Messages screen
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
-    final FirestoreService firestoreService = FirestoreService();
 
     if (currentUser == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Collaboration Requests')),
         body: const Center(child: Text('Please log in to view your requests.')),
+        bottomNavigationBar: _buildBottomNav(),
       );
     }
 
@@ -26,7 +60,7 @@ class MessagesScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: StreamBuilder<List<CollaborationRequestModel>>(
-        stream: firestoreService.streamIncomingRequests(currentUser.uid),
+        stream: _firestoreService.streamIncomingRequests(currentUser.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -148,7 +182,7 @@ class MessagesScreen extends StatelessWidget {
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: () {
-                                  firestoreService.updateRequestStatus(req.id, 'declined');
+                                  _firestoreService.updateRequestStatus(req.id, 'declined');
                                 },
                                 child: const Text('Decline', style: TextStyle(color: Colors.red)),
                               ),
@@ -158,7 +192,7 @@ class MessagesScreen extends StatelessWidget {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0066FF)),
                                 onPressed: () {
-                                  firestoreService.updateRequestStatus(req.id, 'accepted');
+                                  _firestoreService.updateRequestStatus(req.id, 'accepted');
                                 },
                                 child: const Text('Accept', style: TextStyle(color: Colors.white)),
                               ),
@@ -173,6 +207,47 @@ class MessagesScreen extends StatelessWidget {
             },
           );
         },
+      ),
+      bottomNavigationBar: _buildBottomNav(),
+    );
+  }
+
+  Widget _buildBottomNav() {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Color(0xFFF1F5F9), width: 1)),
+      ),
+      child: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        selectedItemColor: const Color(0xFF0066FF),
+        unselectedItemColor: const Color(0xFF64748B),
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
+        elevation: 0,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment_outlined),
+            activeIcon: Icon(Icons.assignment),
+            label: 'Projects',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'AI Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble_outline),
+            activeIcon: Icon(Icons.chat_bubble),
+            label: 'Messages',
+          ),
+        ],
       ),
     );
   }

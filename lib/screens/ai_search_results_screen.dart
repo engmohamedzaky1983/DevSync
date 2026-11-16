@@ -5,6 +5,8 @@ import '../models/project_model.dart';
 import '../models/collaboration_request_model.dart';
 import '../services/firestore_service.dart';
 import 'messages_screen.dart';
+import 'profile_screen.dart';
+import 'project_form_screen.dart';
 
 class AiSearchResultsScreen extends StatefulWidget {
   final ProjectModel? project;
@@ -20,6 +22,30 @@ class _AiSearchResultsScreenState extends State<AiSearchResultsScreen> {
   List<DeveloperModel> _developers = [];
   bool _isLoading = true;
   final Set<String> _sentRequests = {};
+  final int _selectedIndex = 2;
+
+  void _onItemTapped(int index) {
+    if (index == _selectedIndex) return;
+
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ProjectFormScreen()),
+      );
+    } else if (index == 2) {
+      // Already on AI Search screen
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MessagesScreen()),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -245,6 +271,43 @@ class _AiSearchResultsScreenState extends State<AiSearchResultsScreen> {
                     );
                   },
                 ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: Color(0xFFF1F5F9), width: 1)),
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          selectedItemColor: const Color(0xFF0066FF),
+          unselectedItemColor: const Color(0xFF64748B),
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+          elevation: 0,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.assignment_outlined),
+              activeIcon: Icon(Icons.assignment),
+              label: 'Projects',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'AI Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_outline),
+              activeIcon: Icon(Icons.chat_bubble),
+              label: 'Messages',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

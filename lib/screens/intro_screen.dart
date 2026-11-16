@@ -161,7 +161,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(),
-                  const Icon(Icons.code, size: 80, color: Color(0xFF0066FF)),
+                  Image.asset("assets/images/DevSync logo.png"),
                   const SizedBox(height: 20),
                   const Text('DevSync', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
@@ -172,6 +172,7 @@ class _IntroScreenState extends State<IntroScreen> {
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
+                  Image.asset("assets/images/Collaboration artwork.png"),
                   const Spacer(),
                   // Google Sign In Button
                   SizedBox(
@@ -193,7 +194,7 @@ class _IntroScreenState extends State<IntroScreen> {
                                 color: Color(0xFF0066FF),
                               ),
                             )
-                          : const Icon(Icons.g_mobiledata, size: 32, color: Colors.red),
+                          : Image.asset("assets/images/Google mark.png"),
                       label: const Text(
                         'Continue with Google',
                         style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 15),
